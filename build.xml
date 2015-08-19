@@ -4,7 +4,7 @@
   <property name="m2_repo" value="${user.home}/.m2/repository"/>
   <property name="project.name" value="wp-cors"/>
   <property name="src" value="${basedir}"/>
-  <property name="version" value="0.2.0"/>
+  <property name="version" value="0.2.1"/>
   <property name="zipName" value="${project.name}.zip"/>
 
   <target name="clean">

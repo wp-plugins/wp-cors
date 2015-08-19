@@ -2,15 +2,16 @@
 /*
  * Plugin Name: WP-CORS 
  * Plugin URI: http://knowprocess.com/wp-plugins/wp-cors
- * Description: Simply allows you to control which external domains may make AJAX calls to integrate your content using the CORS standard. 
+ * Description: Simply allows you to control which external domains may make 
+ *   AJAX calls to integrate your content using the CORS standard. 
  * Author: Tim Stephenson
- * Version: 0.2
+ * Version: 0.2.1
  * Author URI: http://knowprocess.com
  * License: GPLv2 or later
  */
 
   define("CORS_ID", 'wp-cors');
-  define("CORS_VERSION", "0.1.1");
+  define("CORS_VERSION", "0.2.1");
   define("CORS_NAME", 'CORS');
   define("CORS_DEBUG", false);
   //require_once("includes/shortcodes.php");
@@ -19,10 +20,6 @@
     add_action( 'admin_menu', 'add_cors_admin_menu' );
     add_action( 'admin_init', 'register_cors_admin_settings' );
   } else {
-    // non-admin enqueues, actions, and filters
-    // Not sure of the rights and wrongs but wp_enqueue_styles did not work
-    add_action( 'wp_head', 'cors_load_styles' );
-    add_action( 'wp_enqueue_scripts', 'cors_load_scripts' );
     add_action( 'send_headers', 'add_cors_header' );
   }
   add_action( 'wp_ajax_cors_change_domains', 'cors_change_domains' );
@@ -53,45 +50,6 @@
     } 
   }
 
-  function cors_load_styles() {
-    if ( is_admin() ) {
-      wp_enqueue_style(
-        CORS_ID.'-admin',
-        plugins_url( 'css/admin-'.CORS_VERSION.'.css', __FILE__ ),
-        array(),
-        null /* Force no version as query string */
-      );
-    } else {
-      wp_enqueue_style(
-        CORS_ID.'-frontend',
-        plugins_url( 'css/frontend-'.CORS_VERSION.'.css', __FILE__ ),
-        array(),
-        null /* Force no version as query string */
-      );
-    }
-  }
-
-  function cors_load_scripts() {
-    if ( is_admin() ) {
-      /*
-      wp_enqueue_script(
-        'syncapt-plugin-admin',
-        plugins_url( 'js/admin.js', __FILE__ ),
-        array( 'jquery' ),
-        CORS_VERSION
-      );
-      */
-    } else {
-      wp_enqueue_script(
-        CORS_ID.'-ui',
-        plugins_url( 'js/'.CORS_ID.'-'.CORS_VERSION.(CORS_DEBUG ? '' : '.min').'.js', __FILE__ ),
-        array( 'jquery' ),
-        null, /* Force no version as query string */
-        true /* Force load in footer */
-      );
-    }
-  }
-
   /** Render the settings / options page in the admin dashboard */
   function cors_options_page() {
     if ( !current_user_can( 'manage_options' ) )  {
@@ -100,6 +58,7 @@
     <div class="wrap">
     <h2><?php echo CORS_NAME; ?> Settings</h2>
     <p>You may enter one or more comma-separated domains to allow access to this site using the CORS standard for authorizing cross site requests.</p>
+    <p>To allow <em>any</em> site to access yours via CORS put a *, though explicitly listing domains is a better practice for production sites.</p>
     <form method="post" action="options.php">
       <table class="form-table">
         <tr valign="top">
